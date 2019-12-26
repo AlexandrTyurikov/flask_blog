@@ -23,11 +23,17 @@ def create_post():
 @bp.route('/')
 def index():
     search = request.args.get('search')
-    if search:
-        posts = Post.query.filter(Post.title.contains(search) | Post.body.contains(search)).all()
+    page = request.args.get('page')
+    if page and page.isdigit():
+        page = int(page)
     else:
-        posts = Post.query.all()
-    return render_template('posts/index.html', posts=posts)
+        page = 1
+    if search:
+        posts = Post.query.filter(Post.title.contains(search) | Post.body.contains(search))  # .all()
+    else:
+        posts = Post.query.order_by(Post.created_date.desc())
+    pages = posts.paginate(page=page, per_page=4)
+    return render_template('posts/index.html', posts=posts, pages=pages)
 
 
 @bp.route('/<url_slug>')
