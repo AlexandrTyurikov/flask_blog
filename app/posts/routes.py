@@ -20,6 +20,19 @@ def create_post():
     return render_template('posts/create_post.html', form=form)
 
 
+@bp.route('/<url_slug>/update', methods=['POST', 'GET'])
+def update_post(url_slug):
+    post = Post.query.filter(Post.slug == url_slug).first()
+    if request.method == 'POST':
+        form = PostForm(formdata=request.form, obj=post)
+        form.populate_obj(post)
+        db.session.commit()
+        return redirect(url_for('posts.post_detail', url_slug=post.slug))
+
+    form = PostForm(obj=post)
+    return render_template('posts/update_post.html', post=post, form=form)
+
+
 @bp.route('/')
 def index():
     search = request.args.get('search')
