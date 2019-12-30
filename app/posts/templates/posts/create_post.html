@@ -10,14 +10,35 @@
 
 {% block content %}
     <div class="col-md-6">
-        <form action="{{ url_for('posts.create_post') }}" method="POST">
+        <form action="{{ url_for('posts.create_post') }}" method="POST" enctype="multipart/form-data">
             {% for fild in form %}
                 <div class="form-group">
                     {{ fild.label(class="control-lable") }}
                     {{ fild(class="form-control") }}
                 </div>
             {% endfor %}
+
+            <div class="form-group">
+                <label>Select image</label>
+                <div class="custom-file">
+                    <input oninput="filesize(this);" type="file" class="custom-file-input" name="image" id="image">
+                    <label class="custom-file-label" for="image">Select image...</label>
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-success">Create</button>
         </form>
     </div>
+{% endblock %}
+
+{% block script %}
+
+    <script>
+
+        function filesize(elem) {
+            document.cookie = `filesize=${elem.files[0].size}`
+        }
+
+    </script>
+
 {% endblock %}

@@ -5,15 +5,17 @@
 {% endblock %}
 
 {% block content_title %}
-    Post for {{ tag.name }} tag:
+    Post for <span style="color: darkviolet;">{{ tag.name }}</span> tag:
 {% endblock %}
 
 {% block content %}
     <div class="post">
         {% for post in posts %}
-            <a href="{{ url_for('posts.post_detail', url_slug=post.slug) }}">
+            <p>
+            <a style="text-decoration: none" href="{{ url_for('posts.post_detail', url_slug=post.slug) }}">
                 <span>{{ post.title }}</span>
             </a>
+            </p>
         {% endfor %}
     </div>
 {% endblock %}

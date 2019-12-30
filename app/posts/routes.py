@@ -1,9 +1,29 @@
-from flask import render_template, request, redirect, url_for
+import os
 
-from app import db
+from flask import render_template, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
+from app import db, app
 from app.posts import bp
 from .forms import PostForm
 from .models import Post, Tag
+
+
+def allowed_image(filename):
+    if not "." in filename:
+        return False
+    ext = filename.rsplit(".", 1)[1]
+    if ext.upper() in app.config["ALLOWED_EXTENSIONS_IMAGE_POSTS"]:
+        return True
+    else:
+        return False
+
+
+def allowed_image_filesize(filesize):
+    if int(filesize) <= app.config["MAX_CONTENT_LENGTH_IMAGE_POSTS"]:
+        return True
+    else:
+        return False
 
 
 @bp.route('/create', methods=['GET', 'POST'])
@@ -12,6 +32,25 @@ def create_post():
         title = request.form['title']
         body = request.form['body']
         post = Post(title=title, body=body)
+
+        if request.files:
+            if "filesize" in request.cookies:
+                if not allowed_image_filesize(request.cookies["filesize"]):
+                    print("Filesize exceeded maximum limit")
+                    return redirect(request.url)
+                image = request.files["image"]
+                if image.filename == "":
+                    print("No filename")
+                    return redirect(request.url)
+                if allowed_image(image.filename):
+                    filename = secure_filename(image.filename)
+                    image.save(os.path.join(app.config["UPLOAD_FOLDER_IMAGE_POSTS"], filename))
+                    print("Image saved")
+                    return redirect(request.url)
+                else:
+                    print("That file extension is not allowed")
+                    return redirect(request.url)
+
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('posts.index'))
