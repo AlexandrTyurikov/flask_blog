@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 
+{% block title %}POSTS{% endblock %}
 
-{% block content_title %}
-    Post
-{% endblock %}
+{% block content_title %}Posts{% endblock %}
 
 {% block content %}
+    {% for tag in tags %}
+        <a style="text-decoration: none" href="{{ url_for('posts.tag_detail', url_slug=tag.slug) }}">
+            <span class="badge badge-secondary">{{ tag.name }}</span>
+        </a>
+    {% endfor %}
+
     {% for post in pages.items %}
         <p>
             <a style="text-decoration: none" href="{{ url_for('posts.post_detail', url_slug=post.slug) }}">

@@ -1,6 +1,6 @@
 import os
 
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
 from app import db, app
@@ -29,10 +29,8 @@ def allowed_image_filesize(filesize):
 @bp.route('/create', methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        post = Post(title=title, body=body)
 
+        # get images
         if request.files:
             if "filesize" in request.cookies:
                 if not allowed_image_filesize(request.cookies["filesize"]):
@@ -50,6 +48,11 @@ def create_post():
                 else:
                     print("That file extension is not allowed")
                     return redirect(request.url)
+
+        title = request.form['title']
+        body = request.form['body']
+        image = request.files["image"]
+        post = Post(title=title, body=body, image=image)
 
         db.session.add(post)
         db.session.commit()
@@ -85,7 +88,12 @@ def index():
     else:
         posts = Post.query.order_by(Post.created_date.desc())
     pages = posts.paginate(page=page, per_page=4)
-    return render_template('posts/index.html', posts=posts, pages=pages)
+    tags = Tag.query
+
+    image = request.files["image"]
+    send_from_directory(app.config['UPLOAD_FOLDER'], filename=image.filename)
+
+    return render_template('posts/index.html', posts=posts, pages=pages, tags=tags)
 
 
 @bp.route('/<url_slug>')
