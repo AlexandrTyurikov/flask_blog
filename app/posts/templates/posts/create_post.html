@@ -13,28 +13,7 @@
                     {{ fild(class="form-control") }}
                 </div>
             {% endfor %}
-
-            <div class="form-group">
-                <label>Select image</label>
-                <div class="custom-file">
-                    <input oninput="filesize(this);" type="file" class="custom-file-input" name="image" id="image">
-                    <label class="custom-file-label" for="image">Select image...</label>
-                </div>
-            </div>
-
             <button type="submit" class="btn btn-success">Create</button>
         </form>
     </div>
-{% endblock %}
-
-{% block script %}
-
-    <script>
-
-        function filesize(elem) {
-            document.cookie = `filesize=${elem.files[0].size}`
-        }
-
-    </script>
-
 {% endblock %}

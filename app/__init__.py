@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager
+from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
@@ -13,10 +12,8 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
 
-# from app.user.models import User, Role
+from app.user.models import User, Role
 from app.posts.models import Post, Tag
 
 admin = Admin(app)
@@ -30,3 +27,9 @@ app.register_blueprint(post_bp, url_prefix='/blog')
 app.register_blueprint(user_bp, url_prefix='/user')
 
 from app import routes
+from app.posts import models
+from app.user import models
+
+
+# db.create_all()
+# db.drop_all()
