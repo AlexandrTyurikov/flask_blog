@@ -5,7 +5,7 @@ from flask_admin import Admin
 from flask_security import SQLAlchemyUserDatastore, Security
 
 from config import Config
-from app.admin import AdminView, HomeAdminView, PostAdminView, TagAdminView
+from app.admin import UserAdminView, RoleAdminView, HomeAdminView, PostAdminView, TagAdminView
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -19,12 +19,12 @@ migrate = Migrate(app, db)
 from app.posts.models import *
 from app.user.models import *
 
-admin = Admin(app, 'FlaskApp', url='/', index_view=HomeAdminView(name='Home'))
+admin = Admin(app, 'JUNIOR DEVELOPER BLOG', url='/', index_view=HomeAdminView(name='Home'))
 
 admin.add_view(PostAdminView(Post, db.session))
 admin.add_view(TagAdminView(Tag, db.session))
-admin.add_view(AdminView(User, db.session))
-admin.add_view(AdminView(Role, db.session))
+admin.add_view(UserAdminView(User, db.session))
+admin.add_view(RoleAdminView(Role, db.session))
 
 
 # BLUEPRINT

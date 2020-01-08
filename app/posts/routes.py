@@ -26,7 +26,7 @@ def create_post():
 @bp.route('/<url_slug>/update', methods=['POST', 'GET'])
 @login_required
 def update_post(url_slug):
-    post = Post.query.filter(Post.slug == url_slug).first()
+    post = Post.query.filter(Post.slug == url_slug).first_or_404()
     if request.method == 'POST':
         form = PostForm(formdata=request.form, obj=post)
         form.populate_obj(post)
@@ -57,13 +57,13 @@ def index():
 
 @bp.route('/<url_slug>')
 def post_detail(url_slug):
-    post = Post.query.filter(Post.slug == url_slug).first()
+    post = Post.query.filter(Post.slug == url_slug).first_or_404()
     tags = post.tags
     return render_template('posts/post_detail.html', post=post, tags=tags)
 
 
 @bp.route('/tag/<url_slug>')
 def tag_detail(url_slug):
-    tag = Tag.query.filter(Tag.slug == url_slug).first()
+    tag = Tag.query.filter(Tag.slug == url_slug).first_or_404()
     posts = tag.posts.all()
     return render_template('posts/tag_detail.html', tag=tag, posts=posts)

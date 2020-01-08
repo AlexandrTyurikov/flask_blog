@@ -18,12 +18,20 @@ class BaseModelView(ModelView):
         return super(BaseModelView, self).on_model_change(form, model, is_created)
 
 
-class AdminView(AdminMixin, ModelView):
-    pass
+class UserAdminView(AdminMixin, ModelView):
+    can_view_details = ['user_name']
+    column_list = ['user_name', 'email', 'phone', 'created_date']
+
+
+class RoleAdminView(AdminMixin, ModelView):
+    can_view_details = ['name']
 
 
 class PostAdminView(AdminMixin, BaseModelView):
     form_columns = ['title', 'body', 'tags']
+    can_view_details = ['title']
+    column_editable_list = ['title']
+    column_list = ['title', 'slug', 'created_date']
 
 
 class TagAdminView(AdminMixin, BaseModelView):
