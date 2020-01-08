@@ -36,7 +36,11 @@
                     <a class="dropdown-item" href="#">И что-то еще</a>
                 </div>
             </li>
-
+            {% if current_user.has_role('admin') %}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">Admin</a>
+            </li>
+            {% endif %}
         </ul>
         <ul class="navbar-nav mr-auto">
             <form class="form-inline" method="get">

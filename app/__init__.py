@@ -2,9 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
+from flask_security import SQLAlchemyUserDatastore, Security
 
 from config import Config
+from app.admin import AdminView, HomeAdminView, PostAdminView, TagAdminView
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -13,23 +14,32 @@ db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
 
-from app.user.models import User, Role
-from app.posts.models import Post, Tag
 
-admin = Admin(app)
-admin.add_view(ModelView(Post, db.session))
-admin.add_view(ModelView(Tag, db.session))
+# ADMIN
+from app.posts.models import *
+from app.user.models import *
 
+admin = Admin(app, 'FlaskApp', url='/', index_view=HomeAdminView(name='Home'))
+
+admin.add_view(PostAdminView(Post, db.session))
+admin.add_view(TagAdminView(Tag, db.session))
+admin.add_view(AdminView(User, db.session))
+admin.add_view(AdminView(Role, db.session))
+
+
+# BLUEPRINT
 from app.posts import bp as post_bp
 from app.user import bp as user_bp
 
 app.register_blueprint(post_bp, url_prefix='/blog')
 app.register_blueprint(user_bp, url_prefix='/user')
 
+
+# FLASK SECURITY
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
+
 from app import routes
-from app.posts import models
-from app.user import models
-
-
-# db.create_all()
-# db.drop_all()
+# from app.posts import models
+# from app.user import models

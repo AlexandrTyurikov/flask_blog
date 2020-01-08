@@ -21,10 +21,16 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean())
     created_date = db.Column(db.DateTime, default=datetime.now())
 
-    role = db.relationship('Role', secondary=roles_user, backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary=roles_user, backref=db.backref('users', lazy='dynamic'))
+
+    def __repr__(self):
+        return f'{self.user_name}, email: {self.email}'
 
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.Text())
+
+    def __repr__(self):
+        return f'{self.name}'

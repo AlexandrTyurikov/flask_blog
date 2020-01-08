@@ -1,12 +1,14 @@
-from flask import render_template, request, redirect, url_for, send_from_directory
+from flask import render_template, request, redirect, url_for
+from flask_security import login_required
 
-from app import db, app
+from app import db
 from app.posts import bp
 from .forms import PostForm
 from .models import Post, Tag
 
 
 @bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_post():
     if request.method == 'POST':
         title = request.form['title']
@@ -22,6 +24,7 @@ def create_post():
 
 
 @bp.route('/<url_slug>/update', methods=['POST', 'GET'])
+@login_required
 def update_post(url_slug):
     post = Post.query.filter(Post.slug == url_slug).first()
     if request.method == 'POST':

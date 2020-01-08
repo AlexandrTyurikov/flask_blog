@@ -33,7 +33,7 @@ class Post(db.Model):
             self.slug = slugify(self.title)
 
     def __repr__(self):
-        return f'<Post id: {self.id}, title: {self.title}>'
+        return f'{self.title}'
 
 
 class Tag(db.Model):
@@ -43,7 +43,11 @@ class Tag(db.Model):
 
     def __init__(self, *args, **kwargs):
         super(Tag, self).__init__(*args, **kwargs)
-        self.slug = slugify(self.name)
+        self.generate_slug()
+
+    def generate_slug(self):
+        if self.name:
+            self.slug = slugify(self.name)
 
     def __repr__(self):
         return f'{self.name}'
