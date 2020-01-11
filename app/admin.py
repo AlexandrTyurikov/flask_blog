@@ -20,7 +20,7 @@ class BaseModelView(ModelView):
 
 class UserAdminView(AdminMixin, ModelView):
     can_view_details = ['user_name']
-    column_list = ['user_name', 'email', 'phone', 'created_date']
+    column_list = ['user_name', 'email', 'roles', 'created_date']
 
 
 class RoleAdminView(AdminMixin, ModelView):
