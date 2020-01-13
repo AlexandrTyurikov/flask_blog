@@ -31,7 +31,7 @@ class PostAdminView(AdminMixin, BaseModelView):
     form_columns = ['title', 'body', 'tags']
     can_view_details = ['title']
     column_editable_list = ['title']
-    column_list = ['title', 'slug', 'created_date']
+    column_list = ['title', 'author', 'slug', 'created_date']
 
 
 class TagAdminView(AdminMixin, BaseModelView):

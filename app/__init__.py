@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_admin.contrib.sqla import ModelView
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -23,6 +24,10 @@ from app.posts.models import *
 from app.user.models import *
 
 admin = Admin(app, 'JUNIOR DEVELOPER BLOG', url='/', index_view=HomeAdminView(name='Home'))
+
+# admin = Admin(app)
+# admin.add_view(ModelView(User, db.session))
+# admin.add_view(ModelView(Role, db.session))
 
 admin.add_view(PostAdminView(Post, db.session))
 admin.add_view(TagAdminView(Tag, db.session))

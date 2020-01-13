@@ -34,35 +34,7 @@ def register():
 @login_required
 def user_detail(username):
     user = User.query.filter(User.user_name == username).first_or_404()
-    # user = User.query.filter_by(user_name=username).first_or_404()
     return render_template('user/user_detail.html', user=user)
-
-
-# @bp.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         email = request.form['email']
-#         first_name = request.form['first_name']
-#         last_name = request.form['last_name']
-#         phone = request.form['phone']
-#         password = request.form['password']
-#
-#         user = User(
-#             user_name=username,
-#             email=email,
-#             first_name=first_name,
-#             last_name=last_name,
-#             phone=phone,
-#             password=password
-#         )
-#
-#         db.session.add(user)
-#         db.session.commit()
-#         return redirect(url_for('security.login'))
-#
-#     form = RegistrationForm()
-#     return render_template('user/register.html', title='Register', form=form)
 
 
 # @bp.route('/login', methods=['GET', 'POST'])

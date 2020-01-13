@@ -11,12 +11,6 @@ roles_user = db.Table('roles_user',
                       )
 
 
-# user_post = db.Table('post_user',
-#                      db.Column('post_id', db.Integer(), db.ForeignKey('post.id')),
-#                      db.Column('user_id', db.Integer(), db.ForeignKey('user.id'))
-#                      )
-
-
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     user_name = db.Column(db.String(80), unique=True)
@@ -30,7 +24,6 @@ class User(db.Model, UserMixin):
 
     roles = db.relationship('Role', secondary=roles_user, backref=db.backref('users', lazy='dynamic'))
 
-    # posts = db.relationship('Post', secondary=user_post, backref=db.backref('author', lazy='dynamic'))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def set_password(self, password):
@@ -40,7 +33,7 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password, password)
 
     def __repr__(self):
-        return f'{self.user_name}, email: {self.email}'
+        return f'{self.user_name}'
 
 
 class Role(db.Model, RoleMixin):

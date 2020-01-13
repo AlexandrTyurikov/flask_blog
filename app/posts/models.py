@@ -18,11 +18,12 @@ post_tags = db.Table('post_tags',
 class Post(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(db.String(140))
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     body = db.Column(db.Text())
     created_date = db.Column(db.DateTime, default=datetime.now())
     slug = db.Column(db.String(140), unique=True)
-
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     tags = db.relationship('Tag', secondary=post_tags, backref=db.backref('posts', lazy='dynamic'))
 

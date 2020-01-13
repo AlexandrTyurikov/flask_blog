@@ -1,8 +1,10 @@
 from flask import render_template, request, redirect, url_for
-from flask_security import login_required
+# from flask_login import current_user
+from flask_security import login_required, current_user
 
 from app import db
 from app.posts import bp
+from app.user.models import User
 from .forms import PostForm
 from .models import Post, Tag
 
@@ -13,7 +15,8 @@ def create_post():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        post = Post(title=title, body=body)
+
+        post = Post(title=title, body=body, author=current_user)
 
         db.session.add(post)
         db.session.commit()
@@ -27,14 +30,29 @@ def create_post():
 @login_required
 def update_post(url_slug):
     post = Post.query.filter(Post.slug == url_slug).first_or_404()
+    username = current_user
     if request.method == 'POST':
         form = PostForm(formdata=request.form, obj=post)
         form.populate_obj(post)
         db.session.commit()
-        return redirect(url_for('posts.post_detail', url_slug=post.slug))
+        return redirect(url_for('user_u.user_detail', username=username))
 
     form = PostForm(obj=post)
     return render_template('posts/update_post.html', post=post, form=form)
+
+
+@bp.route('/<url_slug>/delete', methods=['POST', 'GET'])
+@login_required
+def delete_post(url_slug):
+    post = Post.query.filter(Post.slug == url_slug).first_or_404()
+    username = current_user
+    if request.method == 'POST':
+
+        db.session.delete(post)
+        db.session.commit()
+        return redirect(url_for('user_u.user_detail', username=username))
+
+    return render_template('posts/delete_post.html', post=post)
 
 
 @bp.route('/')
@@ -59,6 +77,7 @@ def index():
 def post_detail(url_slug):
     post = Post.query.filter(Post.slug == url_slug).first_or_404()
     tags = post.tags
+
     return render_template('posts/post_detail.html', post=post, tags=tags)
 
 
